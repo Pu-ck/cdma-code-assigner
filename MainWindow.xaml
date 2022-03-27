@@ -1,0 +1,230 @@
+﻿<Window x:Class="CDMACodeAssigner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CDMACodeAssigner"
+        mc:Ignorable="d"
+        Title="CDMACodeAssigner" Height="510" Width="875"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        ResizeMode="NoResize"
+        >
+
+    <Grid HorizontalAlignment="Center" Width="875">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="280"></RowDefinition>
+            <RowDefinition Height="190"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1" HorizontalAlignment="Center">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="170" ></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <Rectangle Fill="AliceBlue" Grid.Column="1" Grid.ColumnSpan="4" Margin="3,5,5,5"/>
+            
+            <Button Name="AddUserBtn" Style="{StaticResource MaterialDesignRaisedButton}" Width="100" 
+                    Content="Add" Background="White" Foreground="Black" 
+                    BorderBrush="Black" BorderThickness="1" VerticalAlignment="Center"
+                    Margin="10" Grid.Row="0" Grid.Column=
+                    "1" Click="AddUserBtn_Click" HorizontalAlignment="Right"/>
+            
+            <ComboBox Name="SFComboBox" Style="{StaticResource MaterialDesignComboBox}" Grid.Row="0" Grid.Column="1" 
+                      Width="100" Height="32" Margin="10" VerticalAlignment="Top" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"
+                      Background="White" Foreground="Black" BorderBrush="Black" HorizontalAlignment="Right" FontSize="14"/>
+            
+            <ListBox Name="UsersListBox" Style="{StaticResource MaterialDesignListBox}" Grid.Row="0" Grid.Column="2"
+                     Width="200" Height="170" Margin="10" VerticalAlignment="Top"
+                     Background="White" Foreground="Black">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding userData}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            
+            <Rectangle Fill="AliceBlue" Grid.Column="0" Margin="5" Height="20" VerticalAlignment="Top"/>
+
+            <TextBlock Text="Unserved users" Style="{StaticResource MaterialDesignButtonTextBlock}"  VerticalAlignment="Top"
+                       Grid.Row="0" Grid.Column="0" Margin="5"/>
+            
+            <ListView Name="UsersUnservedListView" Style="{StaticResource MaterialDesignListBox}" 
+                    Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left"
+                    Width="100" Height="160" Margin="0,20,0,0" 
+                    Foreground="Black" Grid.ColumnSpan="2" />
+            
+            <Button Name="AssignCodesBtn" Style="{StaticResource MaterialDesignRaisedSecondaryButton}" Width="100" 
+                    Content="Assign" Background="White" Foreground="Black" 
+                    BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top"
+                    Margin="10" Grid.Row="0" Grid.Column="3" Click="AssignCodesBtn_Click"/>
+            
+            <Button Name="ClearCodesBtn" Style="{StaticResource MaterialDesignRaisedSecondaryButton}" Width="100" 
+                    Content="Clear" Background="White" Foreground="Black" 
+                    BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top"
+                    Margin="10" Grid.Row="0" Grid.Column="4" Click="ClearCodesBtn_Click"/>
+            
+            <Button Name="RemoveUserBtn" Style="{StaticResource MaterialDesignRaisedSecondaryButton}" Width="100" 
+                    Content="Remove" Background="White" Foreground="Black" 
+                    BorderBrush="Black" BorderThickness="1" VerticalAlignment="Bottom"
+                    Margin="10" Grid.Row="0" Grid.Column="3" Click="RemoveUserBtn_Click"/>
+
+            <Button Name="SaveFileBtn" Style="{StaticResource MaterialDesignRaisedSecondaryButton}" Width="100" 
+                    Content="Save as" Background="White" Foreground="Black" 
+                    BorderBrush="Black" BorderThickness="1" VerticalAlignment="Bottom"
+                    Margin="10" Grid.Row="0" Grid.Column="4" Click="SaveFileBtn_Click"/>
+
+            <Rectangle Fill="AliceBlue" Grid.Column="6" Margin="5" Height="20" VerticalAlignment="Top"/>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" Grid.Column="6"
+                       Text="Selected user" Margin="5"/>
+
+            <ScrollViewer Grid.Column="6" Height="160" Margin="5" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto">
+                <TextBlock Name="SelectedSequenceTextBlock" MaxWidth="180" Width="140" FontSize="13"
+                       VerticalAlignment="Top" Margin="0,20,0,0" TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid Grid.Row="0" HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+                <ColumnDefinition Width="auto" ></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 1" Grid.Column="0" 
+                       Margin="10"/>
+            <ListView Name="SF1ListView" Grid.Column="0" Margin="10,34,10,10" MouseDoubleClick="SF1ListView_MouseDoubleClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 2" Grid.Column="1" 
+                       Margin="10"/>
+            <ListView Name="SF2ListView" Grid.Column="1" Margin="10,34,10,10" MouseDoubleClick="SF2ListView_MouseDoubleClick" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 4" Grid.Column="2" 
+                       Margin="10"/>
+            <ListView Name="SF4ListView" Grid.Column="2" Margin="10,34,10,10" MouseDoubleClick="SF4ListView_MouseDoubleClick" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 8" Grid.Column="3" 
+                       Margin="10"/>
+            <ListView Name="SF8ListView" Grid.Column="3" Margin="10,34,10,10" MouseDoubleClick="SF8ListView_MouseDoubleClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 16" Grid.Column="4" 
+                       Margin="10"/>
+            <ListView Name="SF16ListView" Grid.Column="4" Margin="10,34,10,10" MouseDoubleClick="SF16ListView_MouseDoubleClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 32" Grid.Column="5" 
+                       Margin="10"/>
+            <ListView Name="SF32ListView" Grid.Column="5" Margin="10,34,10,10" MouseDoubleClick="SF32ListView_MouseDoubleClick" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 64" Grid.Column="6" 
+                       Margin="10"/>
+            <ListView Name="SF64ListView" Grid.Column="6" Margin="10,34,10,10" MouseDoubleClick="SF64ListView_MouseDoubleClick" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 128" Grid.Column="7" 
+                       Margin="10"/>
+            <ListView Name="SF128ListView" Grid.Column="7" Margin="10,34,10,10" MouseDoubleClick="SF128ListView_MouseDoubleClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 256" Grid.Column="8" 
+                       Margin="10"/>
+            <ListView Name="SF256ListView" Grid.Column="8" Margin="10,34,10,10" MouseDoubleClick="SF256ListView_MouseDoubleClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Style="{StaticResource MaterialDesignButtonTextBlock}" 
+                       Text="SF 512" Grid.Column="9" 
+                       Margin="10"/>
+            <ListView Name="SF512ListView" Grid.Column="9" Margin="10,34,10,10" MouseDoubleClick="SF512ListView_MouseDoubleClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="50"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</Window>

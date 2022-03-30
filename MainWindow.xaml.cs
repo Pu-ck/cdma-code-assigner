@@ -10,13 +10,13 @@ namespace CDMACodeAssigner
 {
     public partial class MainWindow : Window
     {
-        private List<Sequence> sequencesList = new List<Sequence>();
-        private List<User> usersList = new List<User>();
+        private List<Sequence> _sequencesList = new List<Sequence>();
+        private List<User> _usersList = new List<User>();
 
-        private List<string> namesTakenList = new List<string>();
-        private List<string> namesList = new List<string>();
+        private List<string> _namesTakenList = new List<string>();
+        private List<string> _namesList = new List<string>();
 
-        private int maxSF = 0;
+        private int _maxSF = 0;
         public MainWindow()
         {
             InitializeComponent();
@@ -31,7 +31,7 @@ namespace CDMACodeAssigner
 
             for (char letter = 'A'; letter <= 'Z'; letter++)
             {
-                namesList.Add(letter + "");
+                _namesList.Add(letter + "");
             }
         }
 
@@ -44,24 +44,24 @@ namespace CDMACodeAssigner
             double numberOfSequences;
             int length = 0;
 
-            numberOfSequences = Math.Log2(maxSF);
+            numberOfSequences = Math.Log2(_maxSF);
 
-            sequencesList.Add(new Sequence { length = 1, values = sequence });
+            _sequencesList.Add(new Sequence { Length = 1, Values = sequence });
 
             for (int i = 0; i < numberOfSequences; i++)
             {
-                int listLength = sequencesList.Count;
+                int listLength = _sequencesList.Count;
 
                 for (int j = length; j < listLength; j++)
                 {
                     //Normal sequence
-                    sequence = sequencesList[j].values.Concat(sequencesList[j].values).ToList();
-                    sequencesList.Add(new Sequence { length = (length + 1) * 2, values = sequence });
+                    sequence = _sequencesList[j].Values.Concat(_sequencesList[j].Values).ToList();
+                    _sequencesList.Add(new Sequence { Length = (length + 1) * 2, Values = sequence });
 
                     // Orthogonal sequence
-                    sequenceOrtho = sequencesList[j].values;
-                    sequenceOrtho = sequenceOrtho.Concat(sequencesList[j].values.Select(x => -x)).ToList();
-                    sequencesList.Add(new Sequence { length = (length + 1) * 2, values = sequenceOrtho });
+                    sequenceOrtho = _sequencesList[j].Values;
+                    sequenceOrtho = sequenceOrtho.Concat(_sequencesList[j].Values.Select(x => -x)).ToList();
+                    _sequencesList.Add(new Sequence { Length = (length + 1) * 2, Values = sequenceOrtho });
 
                     sequenceOrtho = new List<int>();
                 }
@@ -75,31 +75,31 @@ namespace CDMACodeAssigner
             List<List<int>> sequencesAssigned = new List<List<int>>();
             int lastIndex;
 
-            foreach (var user in usersList)
+            foreach (var user in _usersList)
             {
                 lastIndex = 0;
 
-                foreach (var sequence in sequencesList)
+                foreach (var sequence in _sequencesList)
                 {
                     // If the sequence can be assigned to a user
-                    if (user.sf == sequence.length && !sequencesAssigned.Contains(sequence.values) && sequence.isBlocked == false)
+                    if (user.SF == sequence.Length && !sequencesAssigned.Contains(sequence.Values) && sequence.IsBlocked == false)
                     {
-                        user.sequence = sequence.values;
-                        sequence.isBlocked = true;
+                        user.Sequence = sequence.Values;
+                        sequence.IsBlocked = true;
 
-                        BlockSequences(sequence.length);
+                        BlockSequences(sequence.Length);
 
-                        sequencesAssigned.Add(sequence.values);
+                        sequencesAssigned.Add(sequence.Values);
                         break;
                     }
                     lastIndex++;
                 }
                 // If the sequence is already blocked
-                for (int i = lastIndex; i < sequencesList.Count; i++)
+                for (int i = lastIndex; i < _sequencesList.Count; i++)
                 {
-                    if (sequencesList[i].isBlocked == true)
+                    if (_sequencesList[i].IsBlocked == true)
                     {
-                        BlockSequences(sequencesList[i].length);
+                        BlockSequences(_sequencesList[i].Length);
                     }
                 }
             }
@@ -116,15 +116,15 @@ namespace CDMACodeAssigner
 
             for (int i = start; i < end; i++)
             {
-                if (sequencesList[i].isBlocked == true)
+                if (_sequencesList[i].IsBlocked == true)
                 {
-                    sequencesList[i - indexBack].isBlocked = true;
+                    _sequencesList[i - indexBack].IsBlocked = true;
 
                     // Break if index is out of range - last OVSF tree column
                     try
                     {
-                        sequencesList[i + indexFront].isBlocked = true;
-                        sequencesList[i + indexFront + 1].isBlocked = true;
+                        _sequencesList[i + indexFront].IsBlocked = true;
+                        _sequencesList[i + indexFront + 1].IsBlocked = true;
                     }
                     catch
                     {
@@ -140,122 +140,122 @@ namespace CDMACodeAssigner
             }
 
             // The first sequence (1) is always blocked
-            sequencesList[0].isBlocked = true;
+            _sequencesList[0].IsBlocked = true;
         }
 
         private void AddToOVSF()
         {
             // Add users with sequences assigned to them to listviews representing the OVSF tree
-            foreach (var user in usersList)
+            foreach (var user in _usersList)
             {
-                if (user.sf == 1)
+                if (user.SF == 1)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF1ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF1ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 2)
+                else if (user.SF == 2)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF2ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF2ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 4)
+                else if (user.SF == 4)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF4ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF4ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 8)
+                else if (user.SF == 8)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF8ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF8ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 16)
+                else if (user.SF == 16)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF16ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF16ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 32)
+                else if (user.SF == 32)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF32ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF32ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 64)
+                else if (user.SF == 64)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF64ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF64ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 128)
+                else if (user.SF == 128)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF128ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF128ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 256)
+                else if (user.SF == 256)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF256ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF256ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
-                else if (user.sf == 512)
+                else if (user.SF == 512)
                 {
-                    if (user.sequence.Count > 0)
+                    if (user.Sequence.Count > 0)
                     {
-                        SF512ListView.Items.Add("User " + user.name + " Sequence: " + String.Join("", user.sequence));
+                        SF512ListView.Items.Add("User " + user.Name + " Sequence: " + String.Join("", user.Sequence));
                     }
                     else
                     {
-                        UsersUnservedListView.Items.Add("User " + user.name);
+                        UsersUnservedListView.Items.Add("User " + user.Name);
                     }
                 }
             }
@@ -324,26 +324,26 @@ namespace CDMACodeAssigner
         {
             string name = "";
 
-            foreach (string letter in namesList)
+            foreach (string letter in _namesList)
             {
-                if (!namesTakenList.Contains(letter))
+                if (!_namesTakenList.Contains(letter))
                 {
                     name = letter;
-                    namesTakenList.Add(letter);
+                    _namesTakenList.Add(letter);
                     break;
                 }
             }
 
-            usersList.Add(new User { name = name, sf = Convert.ToInt32(SFComboBox.SelectedItem) });
+            _usersList.Add(new User { Name = name, SF = Convert.ToInt32(SFComboBox.SelectedItem) });
 
             // Sort users by their SF value (ascending)
-            usersList = usersList.OrderBy(o => o.sf).ToList();
+            _usersList = _usersList.OrderBy(o => o.SF).ToList();
 
-            UsersListBox.ItemsSource = usersList;
+            UsersListBox.ItemsSource = _usersList;
             UsersListBox.SelectedIndex = -1;
 
             // Determine maximum SF value from the current users list
-            maxSF = usersList.Max(user => user.sf);
+            _maxSF = _usersList.Max(user => user.SF);
 
             EnableButtons();
             
@@ -354,8 +354,8 @@ namespace CDMACodeAssigner
         {
             if (UsersListBox.SelectedIndex >= 0)
             {
-                usersList.RemoveAt(UsersListBox.SelectedIndex);
-                namesTakenList.RemoveAt(UsersListBox.SelectedIndex);
+                _usersList.RemoveAt(UsersListBox.SelectedIndex);
+                _namesTakenList.RemoveAt(UsersListBox.SelectedIndex);
             }
 
             EnableButtons();
@@ -363,9 +363,9 @@ namespace CDMACodeAssigner
             UsersListBox.Items.Refresh();
             UsersListBox.SelectedIndex = 0;
 
-            if (usersList.Count > 0)
+            if (_usersList.Count > 0)
             {
-                maxSF = usersList.Max(user => user.sf);
+                _maxSF = _usersList.Max(user => user.SF);
             }
         }
 
@@ -375,9 +375,9 @@ namespace CDMACodeAssigner
             SelectedSequenceTextBlock.Text = "";
 
             UsersUnservedListView.Items.Clear();
-            namesTakenList.Clear();
-            sequencesList.Clear();
-            usersList.Clear();
+            _namesTakenList.Clear();
+            _sequencesList.Clear();
+            _usersList.Clear();
 
             UsersListBox.SelectedIndex = -1;
             UsersListBox.Items.Refresh();
@@ -398,9 +398,9 @@ namespace CDMACodeAssigner
             AddToOVSF();
 
             // Clear screen
-            namesTakenList.Clear();
-            sequencesList.Clear();
-            usersList.Clear();
+            _namesTakenList.Clear();
+            _sequencesList.Clear();
+            _usersList.Clear();
 
             UsersListBox.SelectedIndex = -1;
             UsersListBox.Items.Refresh();

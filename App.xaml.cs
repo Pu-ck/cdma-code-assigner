@@ -9,24 +9,24 @@ namespace CDMACodeAssigner
 
     public class User
     {
-        public List<int> sequence = new List<int>();
+        public List<int> Sequence = new List<int>();
 
-        public string name { get; set; }
-        public int sf { get; set; }
+        public string Name { get; set; }
+        public int SF { get; set; }
 
-        public string userData
+        public string UserData
         {
             get
             {
-                return $"User { name } SF = { sf }";
+                return $"User { Name } SF = { SF }";
             }
         }
     }
 
     public class Sequence
     {
-        public List<int> values = new List<int>();
-        public bool isBlocked = false;
-        public int length;
+        public List<int> Values = new List<int>();
+        public bool IsBlocked = false;
+        public int Length;
     }
 }

@@ -56,7 +56,7 @@
                      Background="White" Foreground="Black">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding userData}" />
+                        <TextBlock Text="{Binding UserData}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
